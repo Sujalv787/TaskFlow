@@ -16,8 +16,33 @@ const limiter = rateLimit({
   message: { success: false, message: 'Too many requests. Please try again later.' },
 });
 
+// Enable trust proxy for Render / reverse proxies (needed for rate-limiting and secure cookies)
+app.set('trust proxy', 1);
+
 // Middleware
-app.use(cors({ origin: config.clientUrl, credentials: true }));
+const allowedOrigins = config.clientUrl
+  ? config.clientUrl.split(',').map((url) => url.trim().replace(/\/$/, ''))
+  : ['http://localhost:5173'];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // allow requests with no origin (like mobile apps, curl, postman, health checks)
+      if (!origin) return callback(null, true);
+      const cleanOrigin = origin.replace(/\/$/, '');
+      if (
+        allowedOrigins.includes(cleanOrigin) ||
+        allowedOrigins.includes('*') ||
+        (config.nodeEnv !== 'development' && cleanOrigin.endsWith('.vercel.app')) ||
+        cleanOrigin.includes('localhost')
+      ) {
+        return callback(null, true);
+      }
+      return callback(new Error(`CORS error: Origin ${origin} not allowed by Access-Control-Allow-Origin`));
+    },
+    credentials: true,
+  })
+);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan(config.nodeEnv === 'development' ? 'dev' : 'combined'));
