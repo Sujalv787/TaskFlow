@@ -8,8 +8,9 @@ A full-stack **Task & Team Management Platform** built with React, Node.js, Expr
 
 | Service    | URL |
 |-----------|-----|
-| Frontend  | `https://taskflow-client.vercel.app` *(deploy to get URL)* |
-| Backend   | `https://taskflow-api.onrender.com` *(deploy to get URL)* |
+| Frontend (Vercel) | [https://task-flow-fawn-seven.vercel.app](https://task-flow-fawn-seven.vercel.app) |
+| Backend (Render)  | [https://taskflow-server-38t9.onrender.com](https://taskflow-server-38t9.onrender.com) |
+| API Health Check  | [https://taskflow-server-38t9.onrender.com/health](https://taskflow-server-38t9.onrender.com/health) |
 
 ---
 
